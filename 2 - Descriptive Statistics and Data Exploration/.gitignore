@@ -1,0 +1,9 @@
+/.idea/2 - Descriptive Statistics and Data Exploration.iml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/vcs.xml
+data/sample_submission.csv
+.ipynb_checkpoints/eda-checkpoint.ipynb
+data/test.csv
+data/train.csv
+.idea/workspace.xml
