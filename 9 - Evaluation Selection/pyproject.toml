@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "forest_ml"
+name = "ml_forest"
 version = "0.1.0"
 description = "Capstone project for RS School ML course"
 authors = ["Alexandr Solomevich"]
 
 [tool.poetry.scripts]
-train = "forest_ml.train:train"
+train = "ml_forest.train:train"
 
 [tool.poetry.dependencies]
 python = "^3.9"
