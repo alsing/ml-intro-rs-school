@@ -1,11 +1,15 @@
 [tool.poetry]
-name = "9 - Evaluation Selection"
+name = "forest_ml"
 version = "0.1.0"
 description = ""
 authors = ["Alexandr Solomevich <alexandr.solomevich@gmail.com>"]
 
+[tool.poetry.scripts]
+train = "forest_ml.train:train"
+
 [tool.poetry.dependencies]
 python = "^3.9"
+click = "8.0.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
