@@ -1,24 +1,24 @@
 [tool.poetry]
 name = "forest_ml"
 version = "0.1.0"
-description = ""
-authors = ["Alexandr Solomevich <alexandr.solomevich@gmail.com>"]
+description = "Capstone project for RS School ML course"
+authors = ["Alexandr Solomevich"]
 
 [tool.poetry.scripts]
 train = "forest_ml.train:train"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-click = "8.0.3"
+click = "^8.0.3"
 pandas = "^1.3.4"
 sklearn = "^0.0"
 scikit-learn = "^1.0.1"
 mlflow = "^1.22.0"
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.2.5"
 black = "^21.11b1"
 mypy = "^0.910"
+pytest = "^6.2.5"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
