@@ -10,6 +10,9 @@ train = "forest_ml.train:train"
 [tool.poetry.dependencies]
 python = "^3.9"
 click = "8.0.3"
+pandas = "^1.3.4"
+sklearn = "^0.0"
+scikit-learn = "^1.0.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
