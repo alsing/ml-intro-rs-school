@@ -1,4 +1,4 @@
-from my_package import __version__
+from 9 _ evaluation selection import __version__
 
 
 def test_version():

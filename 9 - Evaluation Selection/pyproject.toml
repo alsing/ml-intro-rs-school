@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "my-package"
+name = "9 - Evaluation Selection"
 version = "0.1.0"
 description = ""
 authors = ["Alexandr Solomevich <alexandr.solomevich@gmail.com>"]
