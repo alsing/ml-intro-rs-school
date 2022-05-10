@@ -5,6 +5,7 @@ import click
 import mlflow
 import mlflow.sklearn
 from sklearn import metrics
+from sklearn.model_selection import cross_validate
 from .data import get_dataset
 from .pipeline import create_pipeline
 
@@ -31,12 +32,6 @@ from .pipeline import create_pipeline
     show_default=True,
 )
 @click.option(
-    "--test-split-ratio",
-    default=0.2,
-    type=click.FloatRange(0, 1, min_open=True, max_open=True),
-    show_default=True,
-)
-@click.option(
     "--use-scaler",
     default=True,
     type=bool,
@@ -44,7 +39,7 @@ from .pipeline import create_pipeline
 )
 @click.option(
     "--max-iter",
-    default=100,
+    default=500,
     type=int,
     show_default=True,
 )
@@ -55,27 +50,28 @@ from .pipeline import create_pipeline
     show_default=True,
 )
 def train(
-    dataset_path: Path,
-    save_model_path: Path,
-    random_state: int,
-    test_split_ratio: float,
-    use_scaler: bool,
-    max_iter: int,
-    logreg_c: float,
+        dataset_path: Path,
+        save_model_path: Path,
+        random_state: int,
+        use_scaler: bool,
+        max_iter: int,
+        logreg_c: float,
 ) -> None:
-    features_train, features_val, target_train, target_val = get_dataset(
-        dataset_path,
-        random_state,
-        test_split_ratio,
-    )
+    features, target = get_dataset(dataset_path)
     with mlflow.start_run():
         pipeline = create_pipeline(use_scaler, max_iter, logreg_c, random_state)
-        pipeline.fit(features_train, target_train)
-        target_pred = pipeline.predict(features_val)
-        accuracy = metrics.accuracy_score(target_val, target_pred)
-        f1 = metrics.f1_score(target_val, target_pred, average='macro')
-        recall = metrics.recall_score(target_val, target_pred, average='macro')
-        precision = metrics.precision_score(target_val, target_pred, average='macro')
+
+        scoring = {'accuracy': metrics.make_scorer(metrics.accuracy_score),
+                   'f1': metrics.make_scorer(metrics.f1_score, average='macro'),
+                   'recall': metrics.make_scorer(metrics.recall_score, average='macro'),
+                   'precision': metrics.make_scorer(metrics.precision_score, average='macro')}
+
+        scores = cross_validate(pipeline, features, target, cv=5, scoring=scoring, return_train_score=False)
+        accuracy = scores['test_accuracy'].mean()
+        f1 = scores['test_f1'].mean()
+        recall = scores['test_recall'].mean()
+        precision = scores['test_precision'].mean()
+
         mlflow.log_param("use_scaler", use_scaler)
         mlflow.log_param("max_iter", max_iter)
         mlflow.log_param("logreg_c", logreg_c)
@@ -83,9 +79,11 @@ def train(
         mlflow.log_metric("f1", f1)
         mlflow.log_metric("recall", recall)
         mlflow.log_metric("precision", precision)
+
         click.echo(f"Accuracy: {accuracy}.")
         click.echo(f"F1: {f1}.")
         click.echo(f"Recall: {recall}.")
         click.echo(f"Precision: {precision}.")
+
         dump(pipeline, save_model_path)
         click.echo(f"Model is saved to {save_model_path}.")
