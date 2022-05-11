@@ -1,6 +1,6 @@
 Capstone Project for RS School Machine Learning course.
 
-This demo uses Forest Dataset.
+This project uses Forest Dataset.
 
 Usage
 
@@ -31,7 +31,10 @@ Format your code with black by using either nox or poetry: nox -[r]s black | poe
 
 Links:
 Forest Dataset: https://www.kaggle.com/competitions/forest-cover-type-prediction/data
+
 Poetry Documentation: https://python-poetry.org/docs/
+
+Results of Experiments:
 
 .. image:: mlflow.png
   :width: 1000
