@@ -32,6 +32,12 @@ from .pipeline import create_pipeline
     show_default=True,
 )
 @click.option(
+    "--hyper-parameters-tuning",
+    default=False,
+    type=bool,
+    show_default=True,
+)
+@click.option(
     "--random-state",
     default=42,
     type=int,
@@ -95,6 +101,7 @@ def train(
         dataset_path: Path,
         save_model_path: Path,
         model_type: str,
+        hyper_parameters_tuning: bool,
         random_state: int,
         use_scaler: bool,
         scaler_type: str,
@@ -108,7 +115,7 @@ def train(
 ) -> None:
     features, target = get_dataset(dataset_path)
     with mlflow.start_run():
-        pipeline = create_pipeline(model_type, use_scaler, scaler_type, max_iter, logreg_c, apply_pca, random_state,
+        pipeline = create_pipeline(model_type, hyper_parameters_tuning, use_scaler, scaler_type, max_iter, logreg_c, apply_pca, random_state,
                                    n_estimators, max_depth, criterion, bootstrap)
 
         scoring = {'accuracy': metrics.make_scorer(metrics.accuracy_score),
@@ -123,6 +130,7 @@ def train(
         precision = scores['test_precision'].mean()
 
         mlflow.log_param("model_type", model_type)
+        mlflow.log_param("hyper_parameters_tuning", hyper_parameters_tuning)
         mlflow.log_param("use_scaler", use_scaler)
         mlflow.log_param("scaler_type", scaler_type)
         mlflow.log_param("max_iter", max_iter)
