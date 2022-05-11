@@ -76,9 +76,6 @@ def train(
         mlflow.log_param("max_iter", max_iter)
         mlflow.log_param("logreg_c", logreg_c)
         mlflow.log_metric("accuracy", accuracy)
-        mlflow.log_metric("f1", f1)
-        mlflow.log_metric("recall", recall)
-        mlflow.log_metric("precision", precision)
 
         click.echo(f"Accuracy: {accuracy}.")
         click.echo(f"F1: {f1}.")
