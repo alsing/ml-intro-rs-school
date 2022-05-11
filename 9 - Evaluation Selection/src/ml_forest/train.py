@@ -55,6 +55,12 @@ from .pipeline import create_pipeline
     type=float,
     show_default=True,
 )
+@click.option(
+    "--apply-pca",
+    default=False,
+    type=bool,
+    show_default=True,
+)
 def train(
         dataset_path: Path,
         save_model_path: Path,
@@ -63,10 +69,11 @@ def train(
         scaler_type: str,
         max_iter: int,
         logreg_c: float,
+        apply_pca: bool
 ) -> None:
     features, target = get_dataset(dataset_path)
     with mlflow.start_run():
-        pipeline = create_pipeline(use_scaler, scaler_type, max_iter, logreg_c, random_state)
+        pipeline = create_pipeline(use_scaler, scaler_type, max_iter, logreg_c, apply_pca, random_state)
 
         scoring = {'accuracy': metrics.make_scorer(metrics.accuracy_score),
                    'f1': metrics.make_scorer(metrics.f1_score, average='macro'),
@@ -83,7 +90,11 @@ def train(
         mlflow.log_param("scaler_type", scaler_type)
         mlflow.log_param("max_iter", max_iter)
         mlflow.log_param("logreg_c", logreg_c)
+        mlflow.log_param("apply_pca", apply_pca)
         mlflow.log_metric("accuracy", accuracy)
+        mlflow.log_metric("f1", f1)
+        mlflow.log_metric("recall", recall)
+        mlflow.log_metric("precision", precision)
 
         click.echo(f"Accuracy: {accuracy}.")
         click.echo(f"F1: {f1}.")
