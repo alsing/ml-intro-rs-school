@@ -38,6 +38,12 @@ from .pipeline import create_pipeline
     show_default=True,
 )
 @click.option(
+    "--scaler-type",
+    default='Standard',
+    type=str,
+    show_default=True,
+)
+@click.option(
     "--max-iter",
     default=500,
     type=int,
@@ -54,12 +60,13 @@ def train(
         save_model_path: Path,
         random_state: int,
         use_scaler: bool,
+        scaler_type: str,
         max_iter: int,
         logreg_c: float,
 ) -> None:
     features, target = get_dataset(dataset_path)
     with mlflow.start_run():
-        pipeline = create_pipeline(use_scaler, max_iter, logreg_c, random_state)
+        pipeline = create_pipeline(use_scaler, scaler_type, max_iter, logreg_c, random_state)
 
         scoring = {'accuracy': metrics.make_scorer(metrics.accuracy_score),
                    'f1': metrics.make_scorer(metrics.f1_score, average='macro'),
@@ -73,6 +80,7 @@ def train(
         precision = scores['test_precision'].mean()
 
         mlflow.log_param("use_scaler", use_scaler)
+        mlflow.log_param("scaler_type", scaler_type)
         mlflow.log_param("max_iter", max_iter)
         mlflow.log_param("logreg_c", logreg_c)
         mlflow.log_metric("accuracy", accuracy)
